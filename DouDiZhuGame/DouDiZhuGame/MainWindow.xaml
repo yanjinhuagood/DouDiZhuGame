@@ -1,0 +1,29 @@
+﻿<wd:Window
+    x:Class="DouDiZhuGame.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:DouDiZhuGame"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wd="https://github.com/WPFDevelopersOrg/WPFDevelopers"
+    Title="斗地主"
+    Width="800"
+    Height="450"
+    Icon="pack://application:,,,/DouDiZhuGame;component/Icon.ico"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Grid>
+        <local:GameTable x:Name="MyGameTable" />
+        <local:ButtonImage
+            x:Name="MyBtnStart"
+            Width="120"
+            Height="50"
+            Margin="0,0,0,40"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Bottom"
+            Click="Button_Click"
+            DefaultImage="/DouDiZhuGame;component/Resources/Buttons/start-1.png"
+            MouseImage="/DouDiZhuGame;component/Resources/Buttons/start-2.png"
+            PressedImage="/DouDiZhuGame;component/Resources/Buttons/start-3.png" />
+    </Grid>
+</wd:Window>
