@@ -15,9 +15,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="local:PokerCard">
-                <Setter Property="Width" Value="100" />
-                <Setter Property="Height" Value="140" />
-                <Setter Property="Background" Value="Green" />
+                <Setter Property="Width" Value="120" />
+                <Setter Property="Height" Value="160" />
+                <!--<Setter Property="Background" Value="Green" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="local:PokerCard">
@@ -36,7 +36,7 @@
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
-                </Setter>
+                </Setter>-->
             </Style>
             <Style TargetType="local:GameTable">
                 <Setter Property="Template">
@@ -58,7 +58,8 @@
                                     Height="140"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Bottom"
-                                    Visibility="{TemplateBinding IsStart,Converter={StaticResource WD.Bool2VisibilityConverter}}">
+                                    Visibility="{TemplateBinding IsStart,
+                                                                 Converter={StaticResource WD.Bool2VisibilityConverter}}">
                                     <Rectangle.Fill>
                                         <ImageBrush ImageSource="/DouDiZhuGame;component/Resources/FarmerMans/farmer_man_2.png" Stretch="Uniform" />
                                     </Rectangle.Fill>
