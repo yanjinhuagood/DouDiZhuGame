@@ -17,26 +17,6 @@
             <Style TargetType="local:PokerCard">
                 <Setter Property="Width" Value="120" />
                 <Setter Property="Height" Value="160" />
-                <!--<Setter Property="Background" Value="Green" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="local:PokerCard">
-                            <Border
-                                Width="{TemplateBinding Width}"
-                                Height="{TemplateBinding Height}"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="Black"
-                                BorderThickness="1"
-                                CornerRadius="4">
-                                <TextBlock
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="White"
-                                    Text="{Binding Rank, RelativeSource={RelativeSource AncestorType=local:PokerCard}}" />
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>-->
             </Style>
             <Style TargetType="local:GameTable">
                 <Setter Property="Template">
@@ -49,10 +29,25 @@
                                     Height="{TemplateBinding Height}"
                                     Background="{TemplateBinding Background}" />
                                 <WrapPanel
-                                    x:Name="PART_WrapPanel"
+                                    x:Name="PART_WrapPanelTop"
+                                    Margin="0,20,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Top" />
+                                <WrapPanel
+                                    x:Name="PART_WrapPanelBottom"
                                     Margin="0,0,0,20"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Bottom" />
+                                <StackPanel
+                                    x:Name="PART_StackPanelLeft"
+                                    Margin="20,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center" />
+                                <StackPanel
+                                    x:Name="PART_StackPanelRight"
+                                    Margin="0,0,20,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center" />
                                 <Rectangle
                                     Width="140"
                                     Height="140"

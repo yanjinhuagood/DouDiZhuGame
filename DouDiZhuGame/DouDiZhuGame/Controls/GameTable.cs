@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Expression.Controls;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,20 +16,24 @@ namespace DouDiZhuGame
     /// 一副牌斗地主的牌有1-13各4张，+1个大鬼1个小鬼共计54张牌,一个玩家,两个机器人，每人17牌
     /// </summary>
     [TemplatePart(Name = CanvasTemplateName, Type = typeof(Canvas))]
-    [TemplatePart(Name = WrapPanelTemplateName, Type = typeof(WrapPanel))]
+    [TemplatePart(Name = WrapPanelTopTemplateName, Type = typeof(WrapPanel))]
+    [TemplatePart(Name = WrapPanelBottomTemplateName, Type = typeof(WrapPanel))]
+    [TemplatePart(Name = StackPanelLeftTemplateName, Type = typeof(StackPanel))]
+    [TemplatePart(Name = StackPanelRightTemplateName, Type = typeof(StackPanel))]
     public class GameTable : Control
     {
         private const string CanvasTemplateName = "PART_Canvas";
-        private const string WrapPanelTemplateName = "PART_WrapPanel";
+        private const string WrapPanelTopTemplateName = "PART_WrapPanelTop";
+        private const string WrapPanelBottomTemplateName = "PART_WrapPanelBottom";
+        private const string StackPanelLeftTemplateName = "PART_StackPanelLeft";
+        private const string StackPanelRightTemplateName = "PART_StackPanelRight";
         private Canvas _canvas;
-        private WrapPanel _wrapPanel;
-        //private MediaElement _backgroudMediaElement;
+        private WrapPanel _wrapPanelBottom, _wrapPanelTop;
+        private StackPanel _stackPanelLeft, _stackPanelRight;
         private MediaElement _shuffleMediaElement;
         private IEnumerable<PokerCard> selfPokerCards;
         private double x = 0, y = 0;
         private SoundPlayer backgroudWav;
-
-
 
 
         public bool IsStart
@@ -57,13 +62,16 @@ namespace DouDiZhuGame
                 imageBrush.ImageSource = new BitmapImage(new Uri("pack://application:,,,/DouDiZhuGame;component/Resources/Images/background-1.png", UriKind.Absolute));
                 _canvas.Background = imageBrush;
             }
-            _wrapPanel = GetTemplateChild(WrapPanelTemplateName) as WrapPanel;
+            _wrapPanelTop = GetTemplateChild(WrapPanelTopTemplateName) as WrapPanel;
+            _wrapPanelBottom = GetTemplateChild(WrapPanelBottomTemplateName) as WrapPanel;
+            _stackPanelLeft = GetTemplateChild(StackPanelLeftTemplateName) as StackPanel;
+            _stackPanelRight = GetTemplateChild(StackPanelRightTemplateName) as StackPanel;
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            if (_canvas == null) return;
+            if (_canvas == null || IsStart) return;
             GetPokerCard();
         }
 
@@ -94,7 +102,6 @@ namespace DouDiZhuGame
             Debug.WriteLine(cards.Count);
 
             Shuffle(cards);
-            //pokerCards = cards;
             foreach (var item in cards)
             {
                 GetPokerCard(item);
@@ -128,10 +135,27 @@ namespace DouDiZhuGame
 
         void AnimateCardsInReverseOrder(int index)
         {
-            if (index < 37)
+            if(index.Equals(-1))
             {
                 _shuffleMediaElement.Stop();
                 return;
+            }
+            
+            var dock = Dock.Top;
+            if (index > 2) //剩下最后三张牌给地主
+            {
+                if (index % 3 == 2)//bottom
+                {
+                    dock = Dock.Bottom;
+                }
+                else if (index % 3 == 1)//left
+                {
+                    dock = Dock.Left;
+                }
+                else //right
+                {
+                    dock = Dock.Right;
+                }
             }
 
             var card = _canvas.Children.Cast<PokerCard>().ElementAtOrDefault(index);
@@ -139,7 +163,7 @@ namespace DouDiZhuGame
             var moveNum = Canvas.GetTop(card);
             var movePoint = moveNum * 1.8;
 
-            var animationDuration = TimeSpan.FromMilliseconds(300);
+            var animationDuration = TimeSpan.FromMilliseconds(200);
             var moveYAnimation = new DoubleAnimation();
             moveYAnimation.Duration = animationDuration;
 
@@ -147,30 +171,33 @@ namespace DouDiZhuGame
             moveYAnimation.Completed += (sender, args) =>
             {
                 _canvas.Children.Remove(card);
-                card.Margin = new Thickness(-card.Width / 1.5, 0, 0, 0);
-                card.IsBack = false;
-                if(_wrapPanel.Children.Count == 0)
-                    _wrapPanel.Children.Add(card);
-                else
-                {
-                    bool inserted = false;
-                    for (int i = 0; i < _wrapPanel.Children.Count; i++)
-                    {
-                        var child = _wrapPanel.Children[i] as PokerCard;
-                        if (IsRankGreaterThan(card.Rank, child.Rank))
-                        {
-                            _wrapPanel.Children.Insert(i, card);
-                            inserted = true;
-                            break;
-                        }
-                    }
-                    if (!inserted)
-                    {
-                        _wrapPanel.Children.Add(card);
-                    }
-                }
+                PokerCardOrientation(dock, card);
                 AnimateCardsInReverseOrder(index - 1);
             };
+            switch (dock)
+            {
+                case Dock.Left:
+                    moveNum = Canvas.GetLeft(card);
+                    movePoint = 20 + index;
+                    property = Canvas.LeftProperty;
+                    break;
+                case Dock.Top:
+                    moveNum = Canvas.GetTop(card);
+                    movePoint = - (moveNum * 2);
+                    property = Canvas.TopProperty;
+                    break;
+                case Dock.Right:
+                    moveNum = Canvas.GetLeft(card);
+                    movePoint = moveNum * 1.5;
+                    property = Canvas.LeftProperty;
+                    break;
+                case Dock.Bottom:
+                    moveNum = Canvas.GetTop(card);
+                    movePoint = moveNum * 2;
+                    property = Canvas.TopProperty;
+                    break;
+            }
+
             moveYAnimation.From = moveNum;
             moveYAnimation.To = movePoint;
 
@@ -182,22 +209,63 @@ namespace DouDiZhuGame
             return rank1 > rank2;
         }
 
+        void PokerCardOrientation(Dock dock, PokerCard card)
+        {
+            switch (dock)
+            {
+                case Dock.Left:
+                    card.Margin = new Thickness(0, -card.Height * 0.9, 0, 0);
+                    AddPanel(_stackPanelLeft, card, true);
+                    break;
+                case Dock.Top:
+                    card.Margin = new Thickness(card.Width * 0.5, 0, 0, 0);
+                    card.IsBack = false;
+                    AddPanel(_wrapPanelTop, card);
+                    break;
+                case Dock.Right:
+                    card.Margin = new Thickness(0, -card.Height * 0.9, 0, 0);
+                    AddPanel(_stackPanelRight, card, true);
+                    break;
+                case Dock.Bottom:
+                    card.Margin = new Thickness(-card.Width / 1.5, 0, 0, 0);
+                    card.IsBack = false;
+                    AddPanel(_wrapPanelBottom, card);
+                    break;
+            }
+        }
+
+        void AddPanel(Panel panel, PokerCard card, bool insert = false)
+        {
+            if (panel.Children.Count == 0)
+                panel.Children.Add(card);
+            else
+            {
+                bool inserted = false;
+                if (!insert)
+                {
+                    for (int i = 0; i < panel.Children.Count; i++)
+                    {
+                        var child = panel.Children[i] as PokerCard;
+                        if (IsRankGreaterThan(card.Rank, child.Rank))
+                        {
+                            panel.Children.Insert(i, card);
+                            inserted = true;
+                            break;
+                        }
+                    }
+                }
+                if (!inserted)
+                {
+                    panel.Children.Add(card);
+                }
+            }
+        }
+
         public void StartDispatched()
         {
             var audioFilePath = AppDomain.CurrentDomain.BaseDirectory + "\\Resources\\Audios\\Start.wav";
             backgroudWav = new SoundPlayer(audioFilePath);
             backgroudWav.PlayLooping();
-
-
-            //_backgroudMediaElement = new MediaElement(); 
-            //_backgroudMediaElement.MediaEnded += MediaElement_MediaEnded;
-            //_backgroudMediaElement.LoadedBehavior = MediaState.Manual;
-            //_backgroudMediaElement.UnloadedBehavior = MediaState.Manual;
-            //var audioFilePath = AppDomain.CurrentDomain.BaseDirectory + "Resources\\Audios\\Start.wav";
-            //_backgroudMediaElement.Source = new Uri(audioFilePath, UriKind.Relative);
-            //_backgroudMediaElement.Play();
-
-
             _shuffleMediaElement = new MediaElement();
             _shuffleMediaElement.LoadedBehavior = MediaState.Manual;
             _shuffleMediaElement.UnloadedBehavior = MediaState.Manual;
@@ -210,11 +278,5 @@ namespace DouDiZhuGame
             var lastIndex = _canvas.Children.Count - 1;
             AnimateCardsInReverseOrder(lastIndex);
         }
-
-        //private void MediaElement_MediaEnded(object sender, RoutedEventArgs e)
-        //{
-        //    _backgroudMediaElement.Stop();
-        //    _backgroudMediaElement.Play(); 
-        //}
     }
 }
