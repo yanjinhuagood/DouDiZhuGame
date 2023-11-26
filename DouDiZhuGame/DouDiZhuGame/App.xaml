@@ -14,10 +14,126 @@
                 <ResourceDictionary Source="pack://application:,,,/WPFDevelopers;component/Themes/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="local:PokerCard">
+            <Style TargetType="local:ButtonImage">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="local:ButtonImage">
+                            <Image
+                                x:Name="PART_Image"
+                                Source="{TemplateBinding DefaultImage}"
+                                Stretch="Uniform" />
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="PART_Image" Property="Source" Value="{Binding MouseImage, RelativeSource={RelativeSource AncestorType=local:ButtonImage}}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="PART_Image" Property="Source" Value="{Binding PressedImage, RelativeSource={RelativeSource AncestorType=local:ButtonImage}}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+            <Style x:Key="ConfirmButton" TargetType="Button">
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="Foreground" Value="White" />
+                <Setter Property="FontSize" Value="20" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="PART_BorderMain"
+                                Width="120"
+                                Height="40"
+                                Padding="0,0,0,2"
+                                Background="#E2560F"
+                                CornerRadius="6">
+                                <Border.Effect>
+                                    <DropShadowEffect
+                                        BlurRadius="4"
+                                        Direction="280"
+                                        Opacity=".6"
+                                        ShadowDepth="4"
+                                        Color="Black" />
+                                </Border.Effect>
+                                <Grid>
+                                    <Border
+                                        x:Name="PART_Border"
+                                        BorderThickness="1"
+                                        CornerRadius="6">
+                                        <Border.BorderBrush>
+                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                <GradientStop Color="White" />
+                                                <GradientStop Offset="1" Color="#FA9410" />
+                                            </LinearGradientBrush>
+                                        </Border.BorderBrush>
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                                <GradientStop Color="#F8DD5E" />
+                                                <GradientStop Offset="1" Color="#E17814" />
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+                                    <Ellipse
+                                        Height="1.5"
+                                        Margin="30,0"
+                                        VerticalAlignment="Bottom"
+                                        Fill="#FFFF04">
+                                        <Ellipse.Effect>
+                                            <BlurEffect Radius="5" />
+                                        </Ellipse.Effect>
+                                    </Ellipse>
+                                    <Border
+                                        Width="5"
+                                        Height="2"
+                                        Margin="3,4"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Background="White"
+                                        CornerRadius="1"
+                                        RenderTransformOrigin="0.5,0.5">
+                                        <Border.RenderTransform>
+                                            <RotateTransform Angle="-50" />
+                                        </Border.RenderTransform>
+                                    </Border>
+                                    <TextBlock
+                                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                        FontSize="18"
+                                        FontWeight="Black"
+                                        Foreground="White"
+                                        Text="{TemplateBinding Content}">
+                                        <TextBlock.Effect>
+                                            <DropShadowEffect
+                                                BlurRadius="2"
+                                                ShadowDepth="0"
+                                                Color="#B05516" />
+                                        </TextBlock.Effect>
+                                    </TextBlock>
+                                </Grid>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="PART_Border" Property="Opacity" Value=".8" />
+                                    <Setter TargetName="PART_BorderMain" Property="Margin" Value="0,4,0,0" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="PART_Border" Property="Opacity" Value=".7" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="DefaultPokerCard" TargetType="local:PokerCard">
                 <Setter Property="Width" Value="120" />
                 <Setter Property="Height" Value="160" />
             </Style>
+            <Style BasedOn="{StaticResource DefaultPokerCard}" TargetType="local:PokerCard" />
             <Style TargetType="local:GameTable">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -56,35 +172,23 @@
                                     Visibility="{TemplateBinding IsStart,
                                                                  Converter={StaticResource WD.Bool2VisibilityConverter}}">
                                     <Rectangle.Fill>
-                                        <ImageBrush ImageSource="/DouDiZhuGame;component/Resources/FarmerMans/farmer_man_2.png" Stretch="Uniform" />
+                                        <ImageBrush ImageSource="/DouDiZhuGame;component/Resources/FarmerMans/lord_man_2.png" Stretch="Uniform" />
                                     </Rectangle.Fill>
                                 </Rectangle>
+                                <Button
+                                    x:Name="PART_ButtonGrabLord"
+                                    Margin="0,150,0,0"
+                                    Content="抢地主"
+                                    Style="{StaticResource ConfirmButton}"
+                                    Visibility="{TemplateBinding IsSendComplete,
+                                                                 Converter={StaticResource WD.Bool2VisibilityConverter}}" />
                             </Grid>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
             </Style>
 
-            <Style TargetType="local:ButtonImage">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="local:ButtonImage">
-                            <Image
-                                x:Name="PART_Image"
-                                Source="{TemplateBinding DefaultImage}"
-                                Stretch="Uniform" />
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="PART_Image" Property="Source" Value="{Binding MouseImage, RelativeSource={RelativeSource AncestorType=local:ButtonImage}}" />
-                                </Trigger>
-                                <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="PART_Image" Property="Source" Value="{Binding PressedImage, RelativeSource={RelativeSource AncestorType=local:ButtonImage}}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

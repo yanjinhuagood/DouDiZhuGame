@@ -9,12 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\Audios\Grab.wav" />
     <None Remove="Resources\Audios\Shuffle.wav" />
     <None Remove="Resources\Audios\Start.wav" />
     <None Remove="Resources\Buttons\start-1.png" />
     <None Remove="Resources\Buttons\start-2.png" />
     <None Remove="Resources\Buttons\start-3.png" />
+    <None Remove="Resources\FarmerMans\farmer_man_1.png" />
     <None Remove="Resources\FarmerMans\farmer_man_2.png" />
+    <None Remove="Resources\FarmerMans\lord_man_2.png" />
     <None Remove="Resources\Images\background-1.png" />
     <None Remove="Resources\PokerCard\Ace\Clubs.png" />
     <None Remove="Resources\PokerCard\Ace\Diamonds.png" />
@@ -75,6 +78,9 @@
 
   <ItemGroup>
     <Resource Include="Icon.ico" />
+    <Content Include="Resources\Audios\Grab.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\Audios\Shuffle.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -84,7 +90,9 @@
     <Resource Include="Resources\Buttons\start-1.png" />
     <Resource Include="Resources\Buttons\start-2.png" />
     <Resource Include="Resources\Buttons\start-3.png" />
+    <Resource Include="Resources\FarmerMans\farmer_man_1.png" />
     <Resource Include="Resources\FarmerMans\farmer_man_2.png" />
+    <Resource Include="Resources\FarmerMans\lord_man_2.png" />
     <Resource Include="Resources\Images\background-1.png" />
     <Resource Include="Resources\PokerCard\Ace\Clubs.png" />
     <Resource Include="Resources\PokerCard\Ace\Diamonds.png" />

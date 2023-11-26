@@ -20,6 +20,5 @@ namespace DouDiZhuGame
             MyGameTable.StartDispatched();
             MyBtnStart.Visibility = Visibility.Collapsed;
         }
-       
     }
 }
